@@ -4,7 +4,7 @@ A tool used to generate slack UI blocks using elixir defined functions.
 
 ## Example
 
-This following Slack UI view
+The following Slack UI view
 
 ![alt example block creation](https://raw.githubusercontent.com/azohra/BlockBox/master/images/demo.png)
 
