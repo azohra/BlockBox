@@ -1,6 +1,128 @@
 # Blockbox
 
-**TODO: Add description**
+A tool used to generate slack UI blocks using elixir defined functions.
+
+## Motivation
+
+### *Slack blocks are large*
+
+```
+[
+  %{"type" => "divider"},
+  %{
+    "block_id" => "summary",
+    "element" => %{"type" => "plain_text_input"},
+    "label" => %{"emoji" => true, "text" => "Summary", "type" => "plain_text"},
+    "type" => "input"
+  },
+  %{
+    "block_id" => "summ_context",
+    "elements" => [%{"text" => "Summarize", "type" => "mrkdwn"}],
+    "type" => "context"
+  },
+  %{
+    "block_id" => "description",
+    "element" => %{
+      "multiline" => true,
+      "placeholder" => %{
+        "emoji" => true,
+        "text" => "Write something",
+        "type" => "plain_text"
+      },
+      "type" => "plain_text_input"
+    },
+    "label" => %{
+      "emoji" => true,
+      "text" => "Description",
+      "type" => "plain_text"
+    },
+    "type" => "input"
+  },
+  %{
+    "block_id" => "desc_context",
+    "elements" => [%{"text" => "Describe", "type" => "mrkdwn"}],
+    "type" => "context"
+  },
+  %{
+    "block_id" => "priority",
+    "element" => %{
+      "options" => [
+        %{
+          "text" => %{"emoji" => true, "text" => "P1", "type" => "plain_text"},
+          "value" => "6"
+        },
+        %{ 
+          "text" => %{"emoji" => true, "text" => "P2", "type" => "plain_text"},
+          "value" => "7"
+        },
+        %{
+          "text" => %{"emoji" => true, "text" => "P3", "type" => "plain_text"},
+          "value" => "8"
+        },
+        %{
+          "text" => %{"emoji" => true, "text" => "P4", "type" => "plain_text"},
+          "value" => "9"
+        }
+      ],
+      "placeholder" => %{
+        "emoji" => true,
+        "text" => "Select items",
+        "type" => "plain_text"
+      },
+      "type" => "static_select"
+    },
+    "label" => %{"emoji" => true, "text" => "Priority", "type" => "plain_text"},
+    "type" => "input"
+  },
+  %{
+    "block_id" => "labels",
+    "element" => %{
+      "multiline" => false,
+      "placeholder" => %{
+        "emoji" => true,
+        "text" => "thing1, thing2, ...",
+        "type" => "plain_text"
+      },
+      "type" => "plain_text_input"
+    },
+    "label" => %{"emoji" => true, "text" => "Labels", "type" => "plain_text"},
+    "type" => "input"
+  }
+]
+```
+
+Can be converted to something like this
+
+```
+      divider(),
+      input("Summary", %{"type" => "plain_text_input"}, "summary"),
+      context_actions([text_info("Summarize")], "summ_context",
+        elem_type: "context"
+      ),
+      input("Description", plain_text_input("Write something", true), "description"),
+      context_actions([text_info("Describe")], "desc_context",
+        elem_type: "context"
+      ),
+      input(
+        "Priority",
+        static_select(
+          "Select items",
+          Enum.map(1..4, fn x ->
+            generate_option("P" <> Integer.to_string(x), Integer.to_string(x + 5))
+          end)
+        ),
+        "priority"
+      ),
+      input("Labels", plain_text_input("thing1, thing2, ...", false), "labels")
+```
+
+### *Allows for Reusability*
+  
+  - Entire UI flows can be created with block functions
+
+### *Increases overall readability*
+  
+  - Easier to read functions with parameters over large scoped blocks 
 
 ## Installation
 
