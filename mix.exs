@@ -9,7 +9,12 @@ defmodule Blockbox.MixProject do
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       deps: deps,
-      package: package()
+      package: package(),
+      docs: [
+        main: "BlockBox",
+        logo: "images/square_shit_bricks_white.png",
+        extras: ["README.md"]
+      ]
     ]
   end
 
