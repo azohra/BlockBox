@@ -136,7 +136,7 @@ using BlockBox the structure can be simplified to
 
 ### *Increases overall readability*
   
-  - Easier to read functions with parameters over large scoped blocks 
+  - It's easier to read functions with parameters instead of large scoped blocks 
 
 ## Installation
 
