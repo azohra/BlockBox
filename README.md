@@ -130,7 +130,7 @@ using BlockBox the structure can be simplified to
 
 ### *Allows for Reusability*
   
-  - Entire UI flows can be created with block functions
+  - Repetition of blocks is reduced across code, the same functions are used and can be changed in a single place
 
 ### *Increases overall readability*
   
