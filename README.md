@@ -1,6 +1,6 @@
-# BlockBox
-
 ![alt example block creation](https://raw.githubusercontent.com/azohra/BlockBox/master/images/shit_bricks.png)
+
+# BlockBox
 
 A tool used to generate slack UI blocks using elixir defined functions.
 
