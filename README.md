@@ -4,11 +4,11 @@ A tool used to generate slack UI blocks using elixir defined functions.
 
 ## Example
 
-This view in the Slack UI
+This following Slack UI view
 
 ![alt example block creation](https://raw.githubusercontent.com/azohra/BlockBox/master/images/demo.png)
 
-has the following structure
+has the elixir structure shown below
 
 ```
 [
@@ -95,7 +95,7 @@ has the following structure
 ]
 ```
 
-using this library the structure can be simplified to 
+using BlockBox the structure can be simplified to 
 
 ```
 [
