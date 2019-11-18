@@ -2,9 +2,13 @@
 
 A tool used to generate slack UI blocks using elixir defined functions.
 
-## Motivation
+## Example
 
-### *Slack blocks are large*
+This view in the Slack UI
+
+![alt example block creation](https://raw.githubusercontent.com/azohra/BlockBox/master/images/demo.png)
+
+has the following structure
 
 ```
 [
@@ -91,7 +95,7 @@ A tool used to generate slack UI blocks using elixir defined functions.
 ]
 ```
 
-Can be converted to something like this
+using this library the structure can be simplified to 
 
 ```
 [
@@ -117,6 +121,12 @@ Can be converted to something like this
   input("Labels", plain_text_input("thing1, thing2, ...", false), "labels")
 ]
 ```
+
+## Motivations
+
+### *Slack blocks are large*
+
+  - As seen above the view is about 3 times larger than the functional definition
 
 ### *Allows for Reusability*
   
