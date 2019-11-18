@@ -94,26 +94,28 @@ A tool used to generate slack UI blocks using elixir defined functions.
 Can be converted to something like this
 
 ```
-      divider(),
-      input("Summary", %{"type" => "plain_text_input"}, "summary"),
-      context_actions([text_info("Summarize")], "summ_context",
-        elem_type: "context"
-      ),
-      input("Description", plain_text_input("Write something", true), "description"),
-      context_actions([text_info("Describe")], "desc_context",
-        elem_type: "context"
-      ),
-      input(
-        "Priority",
-        static_select(
-          "Select items",
-          Enum.map(1..4, fn x ->
-            generate_option("P" <> Integer.to_string(x), Integer.to_string(x + 5))
-          end)
-        ),
-        "priority"
-      ),
-      input("Labels", plain_text_input("thing1, thing2, ...", false), "labels")
+[
+  divider(),
+  input("Summary", %{"type" => "plain_text_input"}, "summary"),
+  context_actions([text_info("Summarize")], "summ_context",
+    elem_type: "context"
+  ),
+  input("Description", plain_text_input("Write something", true), "description"),
+  context_actions([text_info("Describe")], "desc_context",
+    elem_type: "context"
+  ),
+  input(
+    "Priority",
+    static_select(
+      "Select items",
+      Enum.map(1..4, fn x ->
+        generate_option("P" <> Integer.to_string(x), Integer.to_string(x + 5))
+      end)
+    ),
+    "priority"
+  ),
+  input("Labels", plain_text_input("thing1, thing2, ...", false), "labels")
+]
 ```
 
 ### *Allows for Reusability*
