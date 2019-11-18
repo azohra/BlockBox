@@ -1,4 +1,4 @@
-# Blockbox
+# BlockBox
 
 A tool used to generate slack UI blocks using elixir defined functions.
 
