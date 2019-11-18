@@ -14,7 +14,7 @@ defmodule Blockbox.Mixfile do
     [
       files: ["lib", "mix.exs", "README", "LICENSE*"],
       maintainers: ["Samar Sajnani"],
-      licenses: ["Apache 2.0"],
+      licenses: ["MIT"],
       links: %{"Github" => "https://github.com/azohra/BlockBox"}
     ]
   end
