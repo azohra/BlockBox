@@ -267,13 +267,7 @@ defmodule BlockBox do
 
       case is_list(result) do
         true ->
-          [head | tail] = result
-
-          case tail == [] do
-            true -> Map.put(acc, k, head)
-            false -> Map.put(acc, k, result)
-          end
-
+          case result, do: ([head | []] -> Map.put(acc, k, head); [head | tail] -> Map.put(acc, k, result); [] -> acc)
         false ->
           acc
       end
@@ -282,7 +276,13 @@ defmodule BlockBox do
 
   defp _get_val(list_val) when is_list(list_val) do
     Enum.reduce(list_val, [], fn v, acc ->
-      acc ++ _get_val(v)
+      result_val = _get_val(v)
+      case result_val do
+        nil -> 
+          acc
+        _ -> 
+          acc ++ _get_val(v)
+      end
     end)
   end
 
