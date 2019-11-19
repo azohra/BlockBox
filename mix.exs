@@ -4,7 +4,7 @@ defmodule Blockbox.MixProject do
   def project do
     [
       app: :blockbox,
-      version: "0.0.1",
+      version: "0.0.2",
       elixir: "~> 1.9",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,

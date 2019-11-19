@@ -7,7 +7,7 @@ defmodule BlockBox do
     ```elixir
     def deps do
       [
-        {:blockbox, "~> 0.0.1"}
+        {:blockbox, "~> 0.0.2"}
       ]
     end
     ```
@@ -93,15 +93,25 @@ defmodule BlockBox do
       text: String
       element: map()
       block_id: String
+    Optional parameters -> 
+      optional: Boolean \\ false
   """
-  @spec input(String.t(), map(), String.t()) :: map()
-  def input(text, elem, block_id) do
+  @spec input(String.t(), map(), String.t(), list()) :: map()
+  def input(text, elem, block_id, klist \\ []) do
+    optional = Keyword.get(klist, :optional, false)
     input = %{
       "type" => "input",
       "element" => elem,
       "block_id" => block_id,
       "label" => text_info(text, type: "plain_text", emoji_bool: true)
     }
+    case optional,
+      do:
+        (
+          false -> input
+          _ -> Map.put(input, "optional", true)
+        )
+
   end
 
   @doc """

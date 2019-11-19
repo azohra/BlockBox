@@ -146,7 +146,7 @@ by adding `blockbox` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:blockbox, "~> 0.0.1"}
+    {:blockbox, "~> 0.0.2"}
   ]
 end
 ```
