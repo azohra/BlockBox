@@ -331,7 +331,7 @@ defmodule BlockBox do
       defdelegate generate_option(display_text, opt_value), to: BlockBox
       defdelegate divider, to: BlockBox
       defdelegate plain_text_input(placeholder, multiline), to: BlockBox
-      defdelegate input(text, elem, block_id), to: BlockBox
+      defdelegate input(text, elem, block_id, klist \\ []), to: BlockBox
       defdelegate context_actions(elements, block_id, klist \\ []), to: BlockBox
       defdelegate section(text, klist \\ []), to: BlockBox
       defdelegate multi_select_users(placeholder_text), to: BlockBox
