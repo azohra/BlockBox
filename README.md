@@ -130,11 +130,11 @@ using BlockBox the structure can be simplified to
 
   - As seen above the view is about 3 times larger than the functional definition
 
-### *Allows for Reusability*
+### *Reusability*
   
   - Repetition of blocks is reduced across code, the same functions are used and can be changed in a single place
 
-### *Increases overall readability*
+### *Readability*
   
   - It's easier to read functions with parameters instead of large scoped blocks 
 
