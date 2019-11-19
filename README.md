@@ -124,7 +124,7 @@ using BlockBox the structure can be simplified to
 ]
 ```
 
-## Motivations
+## Motivation
 
 ### *Slack blocks are large*
 
