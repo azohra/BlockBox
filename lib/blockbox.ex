@@ -1,4 +1,25 @@
 defmodule BlockBox do
+  @moduledoc """
+  A tool used to generate slack UI blocks using elixir defined functions.
+
+  ## Usage
+  The module is available through hex and can be added to your mix.exs file like so:
+    ```elixir
+    def deps do
+      [
+        {:blockbox, "~> 0.0.1"}
+      ]
+    end
+    ```
+  BlockBox can be imported as follows:
+    ```
+      import BlockBox
+    ```
+  Additionally, the using macro is available as follows:
+    ```
+      use BlockBox
+    ```
+  """
   @doc """
     Function that generates a text struct
     Required parameter ->
