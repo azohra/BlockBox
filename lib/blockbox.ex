@@ -26,12 +26,12 @@ defmodule BlockBox do
     Required parameter ->
       text: String
     Optional keys in the keyword list are as follows with their default values
-      type: String \\ "mrkdwn"
+      type: String \\ "plain_text"
       emoji_bool: emoji \\ false
   """
   @spec text_info(String.t(), list()) :: map()
   def text_info(text, klist \\ []) do
-    type = Keyword.get(klist, :type, "mrkdwn")
+    type = Keyword.get(klist, :type, "plain_text")
     emoji_bool = Keyword.get(klist, :emoji_bool, false)
 
     result = %{
@@ -230,7 +230,7 @@ defmodule BlockBox do
       value: String
   """
   @spec button_block(String.t(), String.t(), String.t()) :: map()
-  def button_block(text, value, type \\ "mrkdwn") do
+  def button_block(text, value, type \\ "plain_text") do
     %{
       "type" => "button",
       "text" => %{
