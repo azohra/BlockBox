@@ -115,7 +115,7 @@ defmodule BlockBox do
 
     case hint do
       false -> input
-      _ -> Map.put(input, "hint", text_info(hint))
+      _ -> Map.put(input, "hint", text_info(hint, type: "plain_text"))
     end
   end
 
