@@ -95,7 +95,7 @@ defmodule BlockBox do
     Optional parameters ->
       optional: Boolean \\ false
   """
-  @spec input(map(), String.t(), String.t(), list()) :: map()
+  @spec input(String.t(), map(), String.t(), list()) :: map()
   def input(text, element, block_id, klist \\ []) do
     optional = Keyword.get(klist, :optional, false)
     hint = Keyword.get(klist, :hint, false)
