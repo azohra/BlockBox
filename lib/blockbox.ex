@@ -145,16 +145,18 @@ defmodule BlockBox do
       type: String
     Optional keys ->
       accessory: other block
-      block_id: String
+      block_id: String,
+      text_type: String
   """
   @spec section(String.t(), keyword()) :: map()
   def section(text, klist \\ []) do
     acc = Keyword.get(klist, :accessory, false)
     bid = Keyword.get(klist, :block_id, false)
+    text_type = Keyword.get(klist, :text_type, "plain_text")
 
     result = %{
       "type" => "section",
-      "text" => text_info(text)
+      "text" => text_info(text, type: text_type)
     }
 
     result_bid =
