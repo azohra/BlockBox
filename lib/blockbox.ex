@@ -20,43 +20,58 @@ defmodule BlockBox do
       use BlockBox
     ```
   """
+  # "plain_text" | "mrkdwn"
+  @type text_type() :: :plain_text | :mrkdwn
+
+  @type select_menu_type() ::
+          :external_select | :users_select | :conversations_select | :channels_select
+
+  @type multi_select_menu_type() ::
+          :multi_external_select
+          | :multi_users_select
+          | :multi_conversations_select
+          | :multi_channels_select
+
+  @type text_info() :: %{
+          required(:text) => String.t(),
+          required(:type) => text_type(),
+          optional(:emoji) => boolean(),
+          optional(:verbatim) => boolean()
+        }
+
+  @type option() :: %{
+          required(:text) => text_info(),
+          required(:value) => String.t(),
+          optional(:url) => String.t()
+        }
 
   @doc """
     Function that generates a text struct
-    Required parameter ->
-      text: String
     Optional keys in the keyword list are as follows with their default values
-      type: String \\ "plain_text"
-      emoji_bool: emoji \\ false
+      emoji: boolean \\ false
+      verbatim: boolean \\ false
   """
-  @spec text_info(String.t(), list()) :: map()
-  def text_info(text, klist \\ []) do
-    type = Keyword.get(klist, :type, "plain_text")
-    emoji_bool = Keyword.get(klist, :emoji_bool, false)
-
-    result = %{
-      "type" => type,
-      "text" => text
+  @spec text_info(String.t(), text_type(), keyword()) :: text_info()
+  def text_info(text, type \\ :plain_text, opts \\ []) do
+    %{
+      type: type,
+      text: text
     }
-
-    case emoji_bool do
-      false -> result
-      _ -> Map.put(result, "emoji", emoji_bool)
-    end
+    |> Map.merge(Enum.into(opts, %{}))
   end
 
   @doc """
     Function that generates an option for select blocks
-    Required parameters ->
-      display_text: String
-      opt_value: option_type
+    options ->
+      url: String
   """
-  @spec generate_option(String.t(), String.t()) :: map()
-  def generate_option(display_text, opt_value) do
+  @spec generate_option(text_info(), String.t(), keyword()) :: option()
+  def generate_option(text_info, opt_value, opts) do
     %{
-      "text" => text_info(display_text, type: "plain_text", emoji_bool: true),
-      "value" => opt_value
+      text: text_info,
+      value: opt_value
     }
+    |> Map.merge(Enum.into(opts, %{}))
   end
 
   @doc """
@@ -64,26 +79,24 @@ defmodule BlockBox do
   """
   @spec divider() :: map()
   def divider do
-    %{
-      "type" => "divider"
-    }
+    %{type: "divider"}
   end
 
   @doc """
     Creates a plain text input block
-    Required parameters ->
-      placeholder: String
-      multiline_bool: Boolean
     Optional keys ->
+      placeholder: text_info()
+      multiline: Boolean
       action_id: String
+      initial_value: String
+      min_length: Integer
+      max_length: integer
+    see https://api.slack.com/reference/block-kit/block-elements#input for options
   """
-  @spec plain_text_input(String.t(), boolean()) :: map()
-  def plain_text_input(placeholder, multiline) do
-    %{
-      "type" => "plain_text_input",
-      "multiline" => multiline,
-      "placeholder" => text_info(placeholder, type: "plain_text", emoji_bool: true)
-    }
+  @spec plain_text_input(keyword()) :: map()
+  def plain_text_input(opts) do
+    %{type: "plain_text_input"}
+    |> Map.merge(Enum.into(opts, %{}))
   end
 
   @doc """
@@ -91,51 +104,35 @@ defmodule BlockBox do
     Required parameters ->
       text: String
       element: map()
-      block_id: String
     Optional parameters ->
       optional: Boolean \\ false
+      block_id: String
+      hint: text_info
   """
-  @spec input(String.t(), map(), String.t(), list()) :: map()
-  def input(text, element, block_id, klist \\ []) do
-    optional = Keyword.get(klist, :optional, false)
-    hint = Keyword.get(klist, :hint, false)
-
-    input = %{
-      "type" => "input",
-      "element" => element,
-      "block_id" => block_id,
-      "label" => text_info(text, type: "plain_text", emoji_bool: true)
+  @spec input(text_info(), map(), list()) :: map()
+  def input(label, element, opts \\ []) do
+    %{
+      type: "input",
+      element: element,
+      label: label
     }
-
-    input =
-      case optional do
-        false -> input
-        _ -> Map.put(input, "optional", true)
-      end
-
-    case hint do
-      false -> input
-      _ -> Map.put(input, "hint", text_info(hint, type: "plain_text"))
-    end
+    |> Map.merge(Enum.into(opts, %{}))
   end
 
   @doc """
     Creates a context or actions block depending on type provided
     Required parameters ->
       elements: list of elements
-      bid: String
     Optional keys ->
-      elem_type: String \\ "context"
+      block_id: String
   """
-  @spec context_actions(list(), String.t(), keyword()) :: map()
-  def context_actions(elements, block_id, klist \\ []) do
-    elem_type = Keyword.get(klist, :elem_type, "context")
-
+  @spec context_actions(list(), keyword()) :: map()
+  def context_actions(elements, opts \\ []) do
     %{
-      "type" => elem_type,
-      "elements" => elements,
-      "block_id" => block_id
+      type: "context",
+      elements: elements
     }
+    |> Map.merge(Enum.into(opts, %{}))
   end
 
   @doc """
@@ -144,43 +141,31 @@ defmodule BlockBox do
       text: String
       type: String
     Optional keys ->
-      accessory: other block
+      accessory: any element object
       block_id: String,
-      text_type: String
+      fields: list(text_info())
   """
-  @spec section(String.t(), keyword()) :: map()
-  def section(text, klist \\ []) do
-    acc = Keyword.get(klist, :accessory, false)
-    bid = Keyword.get(klist, :block_id, false)
-    text_type = Keyword.get(klist, :text_type, "plain_text")
-
-    result = %{
-      "type" => "section",
-      "text" => text_info(text, type: text_type)
+  @spec section(text_info(), keyword()) :: map()
+  def section(text_info, opts \\ []) do
+    %{
+      type: "section",
+      text: text_info
     }
-
-    result_bid =
-      case bid do
-        false -> result
-        _ -> Map.put(result, "block_id", bid)
-      end
-
-    case acc do
-      false -> result_bid
-      _ -> Map.put(result_bid, "accessory", acc)
-    end
+    |> Map.merge(Enum.into(opts, %{}))
   end
 
-  @doc """
-    Creates a multi select user block
-    Required parameters ->
-      placeholder_text: String
-  """
-  @spec multi_select_users(String.t()) :: map()
-  def multi_select_users(placeholder_text) do
+  @spec select_menu(
+          select_menu_type() | multi_select_menu_type(),
+          text_info(),
+          String.t(),
+          keyword()
+        ) ::
+          map()
+  def select_menu(type, placeholder, action_id, opts) do
     %{
-      "type" => "multi_users_select",
-      "placeholder" => text_info(placeholder_text, type: "plain_text", emoji_bool: true)
+      type: type,
+      placeholder: placeholder,
+      action_id: action_id
     }
   end
 
@@ -193,15 +178,15 @@ defmodule BlockBox do
       initial: index
       type: String \\ "static_select" (Specifies select type)
   """
-  @spec static_select(String.t(), list(), list()) :: map()
-  def static_select(text, options, klist \\ []) do
+  @spec static_select(text_info(), list(), list()) :: map()
+  def static_select(text_info, options, klist \\ []) do
     type = Keyword.get(klist, :type, "static_select")
     initial = Keyword.get(klist, :initial, false)
 
     result = %{
-      "type" => type,
-      "placeholder" => text_info(text, type: "plain_text", emoji_bool: true),
-      "options" => options
+      type: type,
+      placeholder: text_info,
+      options: options
     }
 
     case initial do
@@ -234,12 +219,12 @@ defmodule BlockBox do
   @spec button_block(String.t(), String.t(), String.t()) :: map()
   def button_block(text, value, type \\ "plain_text") do
     %{
-      "type" => "button",
-      "text" => %{
-        "type" => type,
-        "text" => text
+      type: "button",
+      text: %{
+        type: type,
+        text: text
       },
-      "value" => value
+      value: value
     }
   end
 
