@@ -7,7 +7,7 @@ defmodule BlockBox do
     ```elixir
     def deps do
       [
-        {:blockbox, "~> 0.0.2"}
+        {:blockbox, "~> 0.2.0"}
       ]
     end
     ```
@@ -20,17 +20,18 @@ defmodule BlockBox do
       use BlockBox
     ```
   """
+
   @doc """
     Function that generates a text struct
     Required parameter ->
       text: String
     Optional keys in the keyword list are as follows with their default values
-      type: String \\ "mrkdwn"
+      type: String \\ "plain_text"
       emoji_bool: emoji \\ false
   """
   @spec text_info(String.t(), list()) :: map()
   def text_info(text, klist \\ []) do
-    type = Keyword.get(klist, :type, "mrkdwn")
+    type = Keyword.get(klist, :type, "plain_text")
     emoji_bool = Keyword.get(klist, :emoji_bool, false)
 
     result = %{
@@ -38,12 +39,10 @@ defmodule BlockBox do
       "text" => text
     }
 
-    case emoji_bool,
-      do:
-        (
-          false -> result
-          _ -> Map.put(result, "emoji", emoji_bool)
-        )
+    case emoji_bool do
+      false -> result
+      _ -> Map.put(result, "emoji", emoji_bool)
+    end
   end
 
   @doc """
@@ -54,7 +53,7 @@ defmodule BlockBox do
   """
   @spec generate_option(String.t(), String.t()) :: map()
   def generate_option(display_text, opt_value) do
-    option = %{
+    %{
       "text" => text_info(display_text, type: "plain_text", emoji_bool: true),
       "value" => opt_value
     }
@@ -75,8 +74,8 @@ defmodule BlockBox do
     Required parameters ->
       placeholder: String
       multiline_bool: Boolean
-    Optional keys ->  
-      action_id: String 
+    Optional keys ->
+      action_id: String
   """
   @spec plain_text_input(String.t(), boolean()) :: map()
   def plain_text_input(placeholder, multiline) do
@@ -93,25 +92,31 @@ defmodule BlockBox do
       text: String
       element: map()
       block_id: String
-    Optional parameters -> 
+    Optional parameters ->
       optional: Boolean \\ false
   """
   @spec input(String.t(), map(), String.t(), list()) :: map()
-  def input(text, elem, block_id, klist \\ []) do
+  def input(text, element, block_id, klist \\ []) do
     optional = Keyword.get(klist, :optional, false)
+    hint = Keyword.get(klist, :hint, false)
+
     input = %{
       "type" => "input",
-      "element" => elem,
+      "element" => element,
       "block_id" => block_id,
       "label" => text_info(text, type: "plain_text", emoji_bool: true)
     }
-    case optional,
-      do:
-        (
-          false -> input
-          _ -> Map.put(input, "optional", true)
-        )
 
+    input =
+      case optional do
+        false -> input
+        _ -> Map.put(input, "optional", true)
+      end
+
+    case hint do
+      false -> input
+      _ -> Map.put(input, "hint", text_info(hint, type: "plain_text"))
+    end
   end
 
   @doc """
@@ -140,32 +145,30 @@ defmodule BlockBox do
       type: String
     Optional keys ->
       accessory: other block
-      block_id: String
+      block_id: String,
+      text_type: String
   """
   @spec section(String.t(), keyword()) :: map()
   def section(text, klist \\ []) do
     acc = Keyword.get(klist, :accessory, false)
     bid = Keyword.get(klist, :block_id, false)
+    text_type = Keyword.get(klist, :text_type, "plain_text")
 
     result = %{
       "type" => "section",
-      "text" => text_info(text)
+      "text" => text_info(text, type: text_type)
     }
 
     result_bid =
-      case bid,
-        do:
-          (
-            false -> result
-            _ -> Map.put(result, "block_id", bid)
-          )
+      case bid do
+        false -> result
+        _ -> Map.put(result, "block_id", bid)
+      end
 
-    case acc,
-      do:
-        (
-          false -> result_bid
-          _ -> Map.put(result_bid, "accessory", acc)
-        )
+    case acc do
+      false -> result_bid
+      _ -> Map.put(result_bid, "accessory", acc)
+    end
   end
 
   @doc """
@@ -201,12 +204,10 @@ defmodule BlockBox do
       "options" => options
     }
 
-    case initial,
-      do:
-        (
-          false -> result
-          _ -> Map.put(result, "initial_option", Enum.at(options, initial))
-        )
+    case initial do
+      false -> result
+      _ -> Map.put(result, "initial_option", Enum.at(options, initial))
+    end
   end
 
   @doc """
@@ -230,12 +231,12 @@ defmodule BlockBox do
       text: String
       value: String
   """
-  @spec button_block(String.t(), String.t()) :: map()
-  def button_block(text, value) do
+  @spec button_block(String.t(), String.t(), String.t()) :: map()
+  def button_block(text, value, type \\ "plain_text") do
     %{
       "type" => "button",
       "text" => %{
-        "type" => "plain_text",
+        "type" => type,
         "text" => text
       },
       "value" => value
@@ -265,11 +266,11 @@ defmodule BlockBox do
     Enum.reduce(list_maps, %{}, fn {k, v}, acc ->
       result = _get_val(v)
 
-      case is_list(result) do
-        true ->
-          case result, do: ([head | []] -> Map.put(acc, k, head); [head | tail] -> Map.put(acc, k, result); [] -> acc)
-        false ->
-          acc
+      case result do
+        [head | []] -> Map.put(acc, k, head)
+        [_head | _tail] -> Map.put(acc, k, result)
+        [] -> acc
+        _ -> acc
       end
     end)
   end
@@ -277,11 +278,10 @@ defmodule BlockBox do
   defp _get_val(list_val) when is_list(list_val) do
     Enum.reduce(list_val, [], fn v, acc ->
       result_val = _get_val(v)
+
       case result_val do
-        nil -> 
-          acc
-        _ -> 
-          acc ++ _get_val(v)
+        nil -> acc
+        _ -> acc ++ _get_val(v)
       end
     end)
   end
@@ -290,24 +290,20 @@ defmodule BlockBox do
     val = Map.get(map_val, "value", false)
 
     val =
-      case val,
-        do:
-          (
-            false -> Map.get(map_val, "selected_date", false)
-            _ -> val
-          )
+      case val do
+        false -> Map.get(map_val, "selected_date", false)
+        _ -> val
+      end
 
     val =
-      case val,
-        do:
-          (
-            false -> Map.get(map_val, "selected_users", false)
-            _ -> val
-          )
+      case val do
+        false -> Map.get(map_val, "selected_users", false)
+        _ -> val
+      end
 
     case val do
       false ->
-        Enum.reduce(map_val, [], fn {k, v}, acc ->
+        Enum.reduce(map_val, [], fn {_k, v}, acc ->
           vals = _get_val(v)
 
           case vals == [] or vals == nil do
@@ -321,7 +317,7 @@ defmodule BlockBox do
     end
   end
 
-  defp _get_val(val) do
+  defp _get_val(_val) do
     nil
   end
 
