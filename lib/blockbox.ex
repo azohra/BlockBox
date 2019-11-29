@@ -7,7 +7,7 @@ defmodule BlockBox do
     ```elixir
     def deps do
       [
-        {:blockbox, "~> 0.0.2"}
+        {:blockbox, "~> 0.2.0"}
       ]
     end
     ```
