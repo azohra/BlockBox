@@ -1,9 +1,6 @@
 defmodule BlockBox.LayoutBlocks do
   @moduledoc """
-  Defines generator functions for most [layout blocks](https://api.slack.com/reference/block-kit/blocks).
-
-  ## Unsuported
-  -
+  Defines generator functions for all [layout blocks](https://api.slack.com/reference/block-kit/blocks).
   """
 
   alias BlockBox.CompositionObjects, as: CO

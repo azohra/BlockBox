@@ -19,122 +19,11 @@ defmodule BlockBox do
     ```
       use BlockBox
     ```
-
-
-  unsupported: confirm objects
   """
 
   alias BlockBox.CompositionObjects, as: CO
   alias BlockBox.LayoutBlocks, as: LB
-
-  @type select_menu_type() ::
-          :external_select | :users_select | :conversations_select | :channels_select
-
-  @type multi_select_menu_type() ::
-          :multi_external_select
-          | :multi_users_select
-          | :multi_conversations_select
-          | :multi_channels_select
-
-  @doc """
-    Creates a plain text input block
-
-    ## Options
-    Options are not included by default.
-    * `:url` - boolean, only availablein overflow menus
-
-    Optional keys ->
-      placeholder: CO.text_object()
-      multiline: Boolean
-      action_id: String
-      initial_value: String
-      min_length: Integer
-      max_length: integer
-    see https://api.slack.com/reference/block-kit/block-elements#input for options
-  """
-  @spec plain_text_input(keyword()) :: map()
-  def plain_text_input(opts) do
-    %{type: "plain_text_input"}
-    |> Map.merge(Enum.into(opts, %{}))
-  end
-
-  @spec select_menu(
-          select_menu_type() | multi_select_menu_type(),
-          CO.text_object(),
-          String.t(),
-          keyword()
-        ) ::
-          map()
-  def select_menu(type, placeholder, action_id, opts \\ []) do
-    %{
-      type: type,
-      placeholder: placeholder,
-      action_id: action_id
-    }
-  end
-
-  @doc """
-    Creates a static select block
-    Required parameters ->
-      text: String
-      options: list()
-    Optional keys ->
-      initial: index
-      type: String \\ "static_select" (Specifies select type)
-  """
-  @spec static_select(CO.text_object(), list(), list()) :: map()
-  def static_select(text_object, options, klist \\ []) do
-    type = Keyword.get(klist, :type, "static_select")
-    initial = Keyword.get(klist, :initial, false)
-
-    result = %{
-      type: type,
-      placeholder: text_object,
-      options: options
-    }
-
-    case initial do
-      false -> result
-      _ -> Map.put(result, "initial_option", Enum.at(options, initial))
-    end
-  end
-
-  @doc """
-    Creates a date block
-    ## Options
-    Options are not included by default.
-    * `:placeholder` - boolean, only availablein overflow menus
-    * `:initial_date` - boolean, only availablein overflow menus
-    * `:confirm` - boolean, only availablein overflow menus, unsuported
-
-  """
-  @spec datepicker(CO.text_object(), String.t()) :: map()
-  def datepicker(plain_text_object_placeholder, date)
-      when is_map(plain_text_object_placeholder) do
-    %{
-      type: "datepicker",
-      initial_date: date,
-      placeholder: plain_text_object_placeholder
-    }
-  end
-
-  @doc """
-    Creates a button block
-    Required parameters ->
-      text: String
-      value: String
-  """
-  @spec button_block(String.t(), String.t(), String.t()) :: map()
-  def button_block(text, value, type \\ "plain_text") do
-    %{
-      type: "button",
-      text: %{
-        type: type,
-        text: text
-      },
-      value: value
-    }
-  end
+  alias BlockBox.BlockElements, as: BE
 
   @doc """
     Parses the block submissions to extract the block_id:block_value key-value pairs
@@ -218,12 +107,15 @@ defmodule BlockBox do
       defdelegate input(label, element, opts \\ []), to: BlockBox.LB
       defdelegate file_block(external_id, source \\ "remote", opts \\ []), to: BlockBox.LB
 
-      # do later
-      defdelegate plain_text_input(placeholder, multiline), to: BlockBox
-      defdelegate multi_select_users(placeholder_text), to: BlockBox
-      defdelegate static_select(text, options, klist \\ []), to: BlockBox
-      defdelegate datepicker(date, placeholder_text), to: BlockBox
-      defdelegate button_block(text, value), to: BlockBox
+      # block elements
+      defdelegate button(text, action_id, opts \\ []), to: BlockBox.BE
+      defdelegate datepicker(action_id, opts \\ []), to: BlockBox.BE
+      defdelegate image(image_url, alt_text), to: BlockBox.BE
+      defdelegate overflow_menu(action_id, options, opts \\ []), to: BlockBox.BE
+      defdelegate plain_text_input(action_id, opts \\ []), to: BlockBox.BE
+      defdelegate radio_buttons(action_id, options, opts \\ []), to: BlockBox.BE
+      defdelegate select_menu(placeholder, type, action_id, opts \\ []), to: BlockBox.BE
+      defdelegate multi_select_menu(placeholder, type, action_id, opts \\ []), to: BlockBox.BE
 
       # auxilliary functions
       defdelegate get_submission_values(list_maps), to: BlockBox
