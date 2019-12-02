@@ -4,6 +4,7 @@ defmodule BlockBox.BlockElements do
   """
 
   alias BlockBox.CompositionObjects, as: CO
+  alias BlockBox.Utils, as: Utils
 
   @type select_menu_type ::
           :static_select
@@ -52,15 +53,17 @@ defmodule BlockBox.BlockElements do
     ## Options
     Options are not included by default.
     * `:placeholder` - `CO.plain_text_object` or String
-    * `:initial_date` - String, "YYYY-MM-DD" format
+    * `:initial_date` - String, "YYYY-MM-DD" format. Put "today" for the current date
     * `:confirm` - `CO.confirm_object`
   """
   @spec datepicker(String.t(), keyword()) :: map()
   def datepicker(action_id, opts \\ []) do
+    opts = Utils.convert_text_opts(opts, [:placeholder])
+
     opts =
-      case Keyword.get(opts, :placeholder) do
-        val when is_binary(val) -> Keyword.put(opts, :placeholder, CO.text_object(val))
-        _val -> opts
+      case Keyword.get(opts, :initial_date) do
+        "today" -> opts |> Keyword.put(:initial_date, Utils.today())
+        _other -> opts
       end
 
     %{type: "datepicker", action_id: action_id}
@@ -109,11 +112,7 @@ defmodule BlockBox.BlockElements do
   """
   @spec plain_text_input(String.t(), keyword()) :: map()
   def plain_text_input(action_id, opts \\ []) do
-    opts =
-      case Keyword.get(opts, :placeholder) do
-        val when is_binary(val) -> Keyword.put(opts, :placeholder, CO.text_object(val))
-        _val -> opts
-      end
+    opts = Utils.convert_text_opts(opts, [:placeholder])
 
     %{type: "plain_text_input", action_id: action_id}
     |> Map.merge(Enum.into(opts, %{}))

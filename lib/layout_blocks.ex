@@ -4,6 +4,7 @@ defmodule BlockBox.LayoutBlocks do
   """
 
   alias BlockBox.CompositionObjects, as: CO
+  alias BlockBox.Utils, as: Utils
 
   @doc """
     Creates a [section block](https://api.slack.com/reference/block-kit/blocks#section).
@@ -11,7 +12,7 @@ defmodule BlockBox.LayoutBlocks do
     ## Options
     Options are not included by default.
     * `:block_id` - string
-    * `:fields` - list of text objects
+    * `:fields` - list of `CO.text_objects`
     * `:accessory` - any [element object](https://api.slack.com/reference/block-kit/block-elements)
   """
   @spec section(String.t() | CO.text_object(), keyword()) :: map()
@@ -48,16 +49,12 @@ defmodule BlockBox.LayoutBlocks do
 
     ## Options
     Options are not included by default.
-    * `:title` - plain_text_object or String
+    * `:title` - `CO.plain_text_object` or String
     * `:block_id` - String
   """
   @spec image_block(String.t(), String.t(), keyword()) :: map()
   def image_block(image_url, alt_text, opts \\ []) do
-    opts =
-      case Keyword.get(opts, :title) do
-        val when is_binary(val) -> Keyword.put(opts, :title, CO.text_object(val))
-        _val -> opts
-      end
+    opts = Utils.convert_text_opts(opts, [:title])
 
     %{
       type: "image",
@@ -75,7 +72,7 @@ defmodule BlockBox.LayoutBlocks do
     * `:block_id` - String
   """
   @spec actions_block(list(), keyword()) :: map()
-  def actions_block(elements, opts \\ []) do
+  def actions_block(elements, opts \\ []) when is_list(elements) do
     %{
       type: "actions",
       elements: elements
@@ -91,7 +88,7 @@ defmodule BlockBox.LayoutBlocks do
     * `:block_id` - String
   """
   @spec context_block(list(), keyword()) :: map()
-  def context_block(elements, opts \\ []) do
+  def context_block(elements, opts \\ []) when is_list(elements) do
     %{
       type: "context",
       elements: elements
@@ -101,19 +98,23 @@ defmodule BlockBox.LayoutBlocks do
 
   @doc """
     Creates an [input block](https://api.slack.com/reference/block-kit/blocks#input).
+
     ## Options
     Options are not included by default.
     * `:block_id` - String
-    * `:hint` - plain_text_object or String
+    * `:hint` - `CO.plain_text_object` or String
     * `:optional` - boolean
   """
-  @spec input(CO.plain_text_object(), map(), keyword()) :: map()
-  def input(label, element, opts \\ []) do
-    opts =
-      case Keyword.get(opts, :hint) do
-        val when is_binary(val) -> Keyword.put(opts, :hint, CO.text_object(val))
-        _val -> opts
-      end
+  @spec input(String.t() | CO.plain_text_object(), map(), keyword()) :: map()
+  def input(label, element, opts \\ [])
+
+  def input(label, element, opts) when is_binary(label) do
+    CO.text_object(label)
+    |> input(element, opts)
+  end
+
+  def input(label, element, opts) do
+    opts = Utils.convert_text_opts(opts, [:hint])
 
     %{
       type: "input",

@@ -24,6 +24,7 @@ defmodule BlockBox do
   alias BlockBox.CompositionObjects, as: CO
   alias BlockBox.LayoutBlocks, as: LB
   alias BlockBox.BlockElements, as: BE
+  alias BlockBox.Views, as: Views
 
   @doc """
     Parses the block submissions to extract the block_id:block_value key-value pairs
@@ -91,31 +92,32 @@ defmodule BlockBox do
   defmacro __using__(_opts) do
     quote do
       # composition objects
-      defdelegate text_object(text, type, opts \\ []), to: BlockBox.CO
-      defdelegate option_object(text, value, opts \\ []), to: BlockBox.CO
-      defdelegate option_group_object(label, options), to: BlockBox.CO
-
-      defdelegate confirm_object(title, text, confirm \\ "Confirm", deny \\ "Deny"),
-        to: BlockBox.CO
+      defdelegate text_object(text, type \\ :plain_text, opts \\ []), to: CO
+      defdelegate confirm_object(title, text, confirm \\ "Confirm", deny \\ "Deny"), to: CO
+      defdelegate option_object(text, value, opts \\ []), to: CO
+      defdelegate option_group_object(label, options), to: CO
 
       # layout blocks
-      defdelegate section(text, opts \\ []), to: BlockBox.LB
-      defdelegate divider(opts \\ []), to: BlockBox.LB
-      defdelegate image_block(image_url, alt_text, opts \\ []), to: BlockBox.LB
-      defdelegate actions_block(elements, opts \\ []), to: BlockBox.LB
-      defdelegate context_block(elements, opts \\ []), to: BlockBox.LB
-      defdelegate input(label, element, opts \\ []), to: BlockBox.LB
-      defdelegate file_block(external_id, source \\ "remote", opts \\ []), to: BlockBox.LB
+      defdelegate section(text, opts \\ []), to: LB
+      defdelegate divider(opts \\ []), to: LB
+      defdelegate image_block(image_url, alt_text, opts \\ []), to: LB
+      defdelegate actions_block(elements, opts \\ []), to: LB
+      defdelegate context_block(elements, opts \\ []), to: LB
+      defdelegate input(label, element, opts \\ []), to: LB
+      defdelegate file_block(external_id, source \\ "remote", opts \\ []), to: LB
 
       # block elements
-      defdelegate button(text, action_id, opts \\ []), to: BlockBox.BE
-      defdelegate datepicker(action_id, opts \\ []), to: BlockBox.BE
-      defdelegate image(image_url, alt_text), to: BlockBox.BE
-      defdelegate overflow_menu(action_id, options, opts \\ []), to: BlockBox.BE
-      defdelegate plain_text_input(action_id, opts \\ []), to: BlockBox.BE
-      defdelegate radio_buttons(action_id, options, opts \\ []), to: BlockBox.BE
-      defdelegate select_menu(placeholder, type, action_id, opts \\ []), to: BlockBox.BE
-      defdelegate multi_select_menu(placeholder, type, action_id, opts \\ []), to: BlockBox.BE
+      defdelegate button(text, action_id, opts \\ []), to: BE
+      defdelegate datepicker(action_id, opts \\ []), to: BE
+      defdelegate image(image_url, alt_text), to: BE
+      defdelegate overflow_menu(action_id, options, opts \\ []), to: BE
+      defdelegate plain_text_input(action_id, opts \\ []), to: BE
+      defdelegate radio_buttons(action_id, options, opts \\ []), to: BE
+      defdelegate select_menu(placeholder, type, action_id, opts \\ []), to: BE
+      defdelegate multi_select_menu(placeholder, type, action_id, opts \\ []), to: BE
+
+      # view payload
+      defdelegate build_view(type, title, blocks, opts \\ []), to: Views
 
       # auxilliary functions
       defdelegate get_submission_values(list_maps), to: BlockBox

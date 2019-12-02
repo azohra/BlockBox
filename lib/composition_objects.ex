@@ -96,7 +96,7 @@ defmodule BlockBox.CompositionObjects do
     |> option_group_object(options)
   end
 
-  def option_group_object(label, options) when is_map(label) do
+  def option_group_object(label, options) do
     %{
       label: label,
       options: options
