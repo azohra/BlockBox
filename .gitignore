@@ -2,3 +2,4 @@ _build
 deps
 doc
 .elixir_ls
+/cover
