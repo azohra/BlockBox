@@ -91,8 +91,8 @@ defmodule BlockboxTest do
     assert divider() == %{"type" => "divider"}
   end
 
-  test "test generate_option" do
-    assert generate_option("option1", "opt_value") == %{
+  test "test option_object" do
+    assert option_object("option1", "opt_value") == %{
              "text" => %{
                "emoji" => true,
                "text" => "option1",
@@ -183,7 +183,7 @@ defmodule BlockboxTest do
   test "test static select" do
     assert static_select(
              "static-select",
-             Enum.map(1..5, fn num -> generate_option("#{num}", "#{num}") end)
+             Enum.map(1..5, fn num -> option_object("#{num}", "#{num}") end)
            ) ==
              %{
                "options" => [
@@ -240,7 +240,7 @@ defmodule BlockboxTest do
   test "test multi select with initial" do
     assert static_select(
              "static-select",
-             Enum.map(1..5, fn num -> generate_option("#{num}", "#{num}") end),
+             Enum.map(1..5, fn num -> option_object("#{num}", "#{num}") end),
              initial: 0,
              type: "multi-select"
            ) == %{
@@ -304,11 +304,11 @@ defmodule BlockboxTest do
   end
 
   test "test text info" do
-    assert text_info("text1") == %{"text" => "text1", "type" => "plain_text"}
+    assert text_object("text1") == %{"text" => "text1", "type" => "plain_text"}
   end
 
   test "test text info with plain text type and emojis to true" do
-    assert text_info("text1", type: "plain_text", emoji_bool: true) == %{
+    assert text_object("text1", type: "plain_text", emoji_bool: true) == %{
              "text" => "text1",
              "type" => "plain_text",
              "emoji" => true

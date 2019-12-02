@@ -19,9 +19,13 @@ defmodule BlockBox do
     ```
       use BlockBox
     ```
+
+
+  unsupported: confirm objects
   """
-  # "plain_text" | "mrkdwn"
-  @type text_type() :: :plain_text | :mrkdwn
+
+  alias BlockBox.CompositionObjects, as: CO
+  alias BlockBox.LayoutBlocks, as: LB
 
   @type select_menu_type() ::
           :external_select | :users_select | :conversations_select | :channels_select
@@ -32,60 +36,15 @@ defmodule BlockBox do
           | :multi_conversations_select
           | :multi_channels_select
 
-  @type text_info() :: %{
-          required(:text) => String.t(),
-          required(:type) => text_type(),
-          optional(:emoji) => boolean(),
-          optional(:verbatim) => boolean()
-        }
-
-  @type option() :: %{
-          required(:text) => text_info(),
-          required(:value) => String.t(),
-          optional(:url) => String.t()
-        }
-
-  @doc """
-    Function that generates a text struct
-    Optional keys in the keyword list are as follows with their default values
-      emoji: boolean \\ false
-      verbatim: boolean \\ false
-  """
-  @spec text_info(String.t(), text_type(), keyword()) :: text_info()
-  def text_info(text, type \\ :plain_text, opts \\ []) do
-    %{
-      type: type,
-      text: text
-    }
-    |> Map.merge(Enum.into(opts, %{}))
-  end
-
-  @doc """
-    Function that generates an option for select blocks
-    options ->
-      url: String
-  """
-  @spec generate_option(text_info(), String.t(), keyword()) :: option()
-  def generate_option(text_info, opt_value, opts) do
-    %{
-      text: text_info,
-      value: opt_value
-    }
-    |> Map.merge(Enum.into(opts, %{}))
-  end
-
-  @doc """
-    Creates a divider block
-  """
-  @spec divider() :: map()
-  def divider do
-    %{type: "divider"}
-  end
-
   @doc """
     Creates a plain text input block
+
+    ## Options
+    Options are not included by default.
+    * `:url` - boolean, only availablein overflow menus
+
     Optional keys ->
-      placeholder: text_info()
+      placeholder: CO.text_object()
       multiline: Boolean
       action_id: String
       initial_value: String
@@ -99,69 +58,14 @@ defmodule BlockBox do
     |> Map.merge(Enum.into(opts, %{}))
   end
 
-  @doc """
-    Creates a input block
-    Required parameters ->
-      text: String
-      element: map()
-    Optional parameters ->
-      optional: Boolean \\ false
-      block_id: String
-      hint: text_info
-  """
-  @spec input(text_info(), map(), list()) :: map()
-  def input(label, element, opts \\ []) do
-    %{
-      type: "input",
-      element: element,
-      label: label
-    }
-    |> Map.merge(Enum.into(opts, %{}))
-  end
-
-  @doc """
-    Creates a context or actions block depending on type provided
-    Required parameters ->
-      elements: list of elements
-    Optional keys ->
-      block_id: String
-  """
-  @spec context_actions(list(), keyword()) :: map()
-  def context_actions(elements, opts \\ []) do
-    %{
-      type: "context",
-      elements: elements
-    }
-    |> Map.merge(Enum.into(opts, %{}))
-  end
-
-  @doc """
-    Creates a section block
-    Required parameters ->
-      text: String
-      type: String
-    Optional keys ->
-      accessory: any element object
-      block_id: String,
-      fields: list(text_info())
-  """
-  @spec section(text_info(), keyword()) :: map()
-  def section(text_info, opts \\ []) do
-    %{
-      type: "section",
-      text: text_info
-    }
-    |> Map.merge(Enum.into(opts, %{}))
-  end
-
   @spec select_menu(
           select_menu_type() | multi_select_menu_type(),
-          text_info(),
+          CO.text_object(),
           String.t(),
           keyword()
         ) ::
           map()
-  def select_menu(type, placeholder, action_id, opts) do
+  def select_menu(type, placeholder, action_id, opts \\ []) do
     %{
       type: type,
       placeholder: placeholder,
@@ -178,14 +82,14 @@ defmodule BlockBox do
       initial: index
       type: String \\ "static_select" (Specifies select type)
   """
-  @spec static_select(text_info(), list(), list()) :: map()
-  def static_select(text_info, options, klist \\ []) do
+  @spec static_select(CO.text_object(), list(), list()) :: map()
+  def static_select(text_object, options, klist \\ []) do
     type = Keyword.get(klist, :type, "static_select")
     initial = Keyword.get(klist, :initial, false)
 
     result = %{
       type: type,
-      placeholder: text_info,
+      placeholder: text_object,
       options: options
     }
 
@@ -197,16 +101,20 @@ defmodule BlockBox do
 
   @doc """
     Creates a date block
-    Required parameters ->
-      date: String (Date string)
-      placeholder_text: String
+    ## Options
+    Options are not included by default.
+    * `:placeholder` - boolean, only availablein overflow menus
+    * `:initial_date` - boolean, only availablein overflow menus
+    * `:confirm` - boolean, only availablein overflow menus, unsuported
+
   """
-  @spec date_block(String.t(), String.t()) :: map()
-  def date_block(date, placeholder_text) do
+  @spec datepicker(CO.text_object(), String.t()) :: map()
+  def datepicker(plain_text_object_placeholder, date)
+      when is_map(plain_text_object_placeholder) do
     %{
       type: "datepicker",
       initial_date: date,
-      placeholder: text_info(placeholder_text, type: "plain_text", emoji_bool: true)
+      placeholder: plain_text_object_placeholder
     }
   end
 
@@ -225,21 +133,6 @@ defmodule BlockBox do
         text: text
       },
       value: value
-    }
-  end
-
-  @doc """
-    Creates an image block
-    Required parameters ->
-      image_url: String
-      alt_text: String
-  """
-  @spec image_block(String.t(), String.t()) :: map()
-  def image_block(image_url, alt_text) do
-    %{
-      type: "image",
-      image_url: image_url,
-      alt_text: alt_text
     }
   end
 
@@ -308,18 +201,31 @@ defmodule BlockBox do
 
   defmacro __using__(_opts) do
     quote do
-      defdelegate text_info(text, klist \\ []), to: BlockBox
-      defdelegate generate_option(display_text, opt_value), to: BlockBox
-      defdelegate divider, to: BlockBox
+      # composition objects
+      defdelegate text_object(text, type, opts \\ []), to: BlockBox.CO
+      defdelegate option_object(text, value, opts \\ []), to: BlockBox.CO
+      defdelegate option_group_object(label, options), to: BlockBox.CO
+
+      defdelegate confirm_object(title, text, confirm \\ "Confirm", deny \\ "Deny"),
+        to: BlockBox.CO
+
+      # layout blocks
+      defdelegate section(text, opts \\ []), to: BlockBox.LB
+      defdelegate divider(opts \\ []), to: BlockBox.LB
+      defdelegate image_block(image_url, alt_text, opts \\ []), to: BlockBox.LB
+      defdelegate actions_block(elements, opts \\ []), to: BlockBox.LB
+      defdelegate context_block(elements, opts \\ []), to: BlockBox.LB
+      defdelegate input(label, element, opts \\ []), to: BlockBox.LB
+      defdelegate file_block(external_id, source \\ "remote", opts \\ []), to: BlockBox.LB
+
+      # do later
       defdelegate plain_text_input(placeholder, multiline), to: BlockBox
-      defdelegate input(text, elem, block_id, klist \\ []), to: BlockBox
-      defdelegate context_actions(elements, block_id, klist \\ []), to: BlockBox
-      defdelegate section(text, klist \\ []), to: BlockBox
       defdelegate multi_select_users(placeholder_text), to: BlockBox
       defdelegate static_select(text, options, klist \\ []), to: BlockBox
-      defdelegate date_block(date, placeholder_text), to: BlockBox
+      defdelegate datepicker(date, placeholder_text), to: BlockBox
       defdelegate button_block(text, value), to: BlockBox
-      defdelegate image_block(image_url, alt_text), to: BlockBox
+
+      # auxilliary functions
       defdelegate get_submission_values(list_maps), to: BlockBox
     end
   end
