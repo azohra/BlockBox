@@ -25,10 +25,65 @@ defmodule BlockBox do
 
   @doc """
   A quality-of-life function that parses the view response payload to extract the block_id:block_value key-value pairs
+    
+    iex> submission_with_optionals = %{
+    ...>  "attachments" => %{
+    ...>   "qtgL" => %{
+    ...>      "type" => "multi_static_select",
+    ...>      "selected_options" => [%{"value" => "1"}, %{"value" => "2"}]
+    ...>    }
+    ...>  },
+    ...>  "description" => %{
+    ...>    "42NY" => %{"type" => "plain_text_input", "value" => "test-123"}
+    ...>  },
+    ...>  "labels" => %{
+    ...>    "21FdK" => %{"type" => "plain_text_input", "value" => "test-123"}
+    ...>  },
+    ...>  "priority" => %{
+    ...>    "tV4vB" => %{
+    ...>      "selected_option" => %{
+    ...>        "text" => %{"emoji" => true, "text" => "P4", "type" => "plain_text"},
+    ...>        "value" => "9"
+    ...>      },
+    ...>      "type" => "static_select"
+    ...>    }
+    ...>  },
+    ...>  "summary" => %{
+    ...>    "BhPhP" => %{"type" => "plain_text_input", "value" => "test-123"}
+    ...>  },
+    ...>  "watchers" => %{
+    ...>    "Po1WR" => %{"type" => "multi_users_select", "selected_users" => ["11221", "12D123"]}
+    ...>  }
+    ...>} 
+    iex> get_submission_values(submission_with_optionals)
+    %{
+      "21FdK" => "test-123",
+      "42NY" => "test-123",
+      "BhPhP" => "test-123",
+      "Po1WR" => ["11221", "12D123"],
+      "qtgL" => ["1", "2"],
+      "tV4vB" => "9"
+    }    
+    iex> get_submission_values(submission_with_optionals, :block_id)
+    %{
+      "21FdK" => "test-123",
+      "42NY" => "test-123",
+      "BhPhP" => "test-123",
+      "Po1WR" => ["11221", "12D123"],
+      "qtgL" => ["1", "2"],
+      "tV4vB" => "9"
+    }    
   """
-  @spec get_submission_values(map()) :: map()
-  def get_submission_values(list_maps) do
-    Enum.reduce(list_maps, %{}, fn {k, v}, acc ->
+  @spec get_submission_values(map(), :action_id | :block_id) :: map()
+  def get_submission_values(block_map, type \\ :action_id)
+  def get_submission_values(block_map, :action_id) do
+    Enum.reduce(block_map, %{}, fn {k, v}, acc ->
+      Map.merge(acc, get_submission_values(v, :block_id))
+    end)
+  end
+
+  def get_submission_values(action_maps, :block_id) do
+    Enum.reduce(action_maps, %{}, fn {k, v}, acc ->
       result = _get_val(v)
 
       case result do
