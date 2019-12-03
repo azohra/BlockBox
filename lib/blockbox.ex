@@ -1,6 +1,21 @@
 defmodule BlockBox do
   @moduledoc """
-  This module contains a generic helper to parse the return payload from slack views.
+  A tool used to generate slack UI blocks using elixir defined functions.
+
+  ## Installation
+  ```elixir
+  def deps do
+    [
+      {:blockbox, "~> 1.0.0"}
+    ]
+  end
+  ```
+
+  ## Usage
+  use BlockBox to access all the generator functions defined in other modules.
+  ```elixir
+    use BlockBox
+  ```
   """
 
   alias BlockBox.CompositionObjects, as: CO
@@ -9,7 +24,7 @@ defmodule BlockBox do
   alias BlockBox.Views, as: Views
 
   @doc """
-    Parses the block submissions to extract the block_id:block_value key-value pairs
+  A quality-of-life function that parses the view response payload to extract the block_id:block_value key-value pairs
   """
   @spec get_submission_values(map()) :: map()
   def get_submission_values(list_maps) do

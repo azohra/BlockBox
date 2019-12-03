@@ -36,12 +36,12 @@ defmodule BlockBox.CompositionObjects do
         }
 
   @doc """
-    Function that generates a [text object](https://api.slack.com/reference/block-kit/composition-objects#text)
+  Function that generates a [text object](https://api.slack.com/reference/block-kit/composition-objects#text)
 
-    ## Options
-    Options are not included by default.
-    * `:emoji` - boolean, only usable when type is `:plain_text`
-    * `:verbatim` - boolean, only usable when type is `:mrkdwn`
+  ## Options
+  Options are not included by default.
+  * `:emoji` - boolean, only usable when type is `:plain_text`
+  * `:verbatim` - boolean, only usable when type is `:mrkdwn`
   """
   @spec text_object(String.t(), text_type(), keyword()) :: text_object()
   def text_object(text, type \\ :plain_text, opts \\ []) do
@@ -53,7 +53,7 @@ defmodule BlockBox.CompositionObjects do
   end
 
   @doc """
-    Function that generates a [confirmation dialog object](https://api.slack.com/reference/block-kit/composition-objects#confirm)
+  Function that generates a [confirmation dialog object](https://api.slack.com/reference/block-kit/composition-objects#confirm)
   """
   @spec confirm_object(String.t(), String.t(), String.t(), String.t()) :: confirm_object()
   def confirm_object(title, text, confirm \\ "Confirm", deny \\ "Deny") do
@@ -66,10 +66,10 @@ defmodule BlockBox.CompositionObjects do
   end
 
   @doc """
-    Function that generates an [option object](https://api.slack.com/reference/block-kit/composition-objects#option) for select menus
-    ## Options
-    Options are not included by default.
-    * `:url` - boolean, only availablein overflow menus
+  Function that generates an [option object](https://api.slack.com/reference/block-kit/composition-objects#option) for select menus
+  ## Options
+  Options are not included by default.
+  * `:url` - boolean, only availablein overflow menus
   """
   def option_object(text, value, opts \\ [])
 
@@ -88,7 +88,7 @@ defmodule BlockBox.CompositionObjects do
   end
 
   @doc """
-    Function that generates an [option group object](https://api.slack.com/reference/block-kit/composition-objects#option_group) for select menus
+  Function that generates an [option group object](https://api.slack.com/reference/block-kit/composition-objects#option_group) for select menus
   """
   @spec option_group_object(String.t() | plain_text_object(), String.t()) :: option_group_object()
   def option_group_object(label, options) when is_binary(label) do

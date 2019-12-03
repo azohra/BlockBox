@@ -1,6 +1,6 @@
 defmodule BlockBox.Views do
   @moduledoc """
-  Provides a generator for creating [views](https://api.slack.com/reference/surfaces/views)
+  Provides a generator for creating [views](https://api.slack.com/reference/surfaces/views).
   """
   alias BlockBox.CompositionObjects, as: CO
   alias BlockBox.Utils, as: Utils
@@ -8,17 +8,17 @@ defmodule BlockBox.Views do
   @type view_type :: :modal | :home
 
   @doc """
-    Creates a [view payload](https://api.slack.com/reference/surfaces/views).
+  Creates a [view payload](https://api.slack.com/reference/surfaces/views).
 
-    ## Options
-    Options are not included by default.
-    * `:close` - `CO.text_object` String
-    * `:submit` - `CO.text_object` String
-    * `:private_metadata` - String
-    * `:callback_id` - String
-    * `:clear_on_close` - boolean
-    * `:notify_on_close` - boolean
-    * `:external_id` - String
+  ## Options
+  Options are not included by default.
+  * `:close` - `t:BlockBox.CompositionObjects.text_object/0` or String
+  * `:submit` - `t:BlockBox.CompositionObjects.text_object/0` or String
+  * `:private_metadata` - String
+  * `:callback_id` - String
+  * `:clear_on_close` - boolean
+  * `:notify_on_close` - boolean
+  * `:external_id` - String
   """
   @spec build_view(view_type, String.t() | CO.plain_text_object(), list(map()), keyword()) ::
           map()
