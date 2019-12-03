@@ -12,11 +12,13 @@ A tool used to generate slack UI blocks using elixir defined functions.
 ## Motivation
 
 * Slack blocks are large
-  - As seen in the example below, the json payload is about 2 times larger than the functional definition
+  - As seen in the example below, the json payload is about 2 times larger than the functional definition.
+* Usability
+  - There's no longer a need to memorize Slack block-kit syntax. Get off the ground faster when building your blocks.
 * Reusability
-  - Repetition of blocks is reduced across code, the same functions are used and can be changed in a single place
+  - Repetition of blocks is reduced across code, the same functions are used and can be changed in a single place.
 * Readability
-  - It's easier to read functions with parameters instead of large scoped blocks 
+  - It's easier to read functions with parameters instead of large scoped blocks.
 
 ## Installation
 
@@ -29,7 +31,7 @@ end
 ```
 
 ## Usage
-`use BlockBox` in whatever module you need it to get access to all the components.
+use BlockBox to get access to all the components visible in our [hex docs](https://hex.pm/packages/blockbox).
 ```
   use BlockBox
 ```
