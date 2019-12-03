@@ -4,11 +4,12 @@ defmodule Blockbox.MixProject do
   def project do
     [
       app: :blockbox,
-      version: "0.0.2",
+      version: "1.0.0",
       elixir: "~> 1.9",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
-      deps: deps,
+      deps: deps(),
+      aliases: aliases(),
       package: package(),
       docs: [
         main: "BlockBox",
@@ -16,6 +17,14 @@ defmodule Blockbox.MixProject do
         extras: ["README.md"]
       ]
     ]
+  end
+
+  defp aliases do
+    [docs: ["docs", &copy_images/1]]
+  end
+
+  defp copy_images(_) do
+    File.cp_r("images", "doc/images")
   end
 
   defp package do
