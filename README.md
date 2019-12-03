@@ -1,7 +1,7 @@
 <!-- ![alt example block creation](https://raw.githubusercontent.com/azohra/BlockBox/master/images/shit_bricks.png) -->
 
 <p align="center">
-  <img src="images/shit_bricks.png" width="600" alt="logo">
+  <img src="images/stroke_shit_bricks.png" width="600" alt="logo">
 </p>
 
 
