@@ -103,11 +103,11 @@ using BlockBox the structure can be simplified to
 [
   divider(),
   input("Summary", %{"type" => "plain_text_input"}, "summary"),
-  context_actions([text_info("Summarize")], "summ_context",
+  context_actions([text_object("Summarize")], "summ_context",
     elem_type: "context"
   ),
   input("Description", plain_text_input("Write something", true), "description"),
-  context_actions([text_info("Describe")], "desc_context",
+  context_actions([text_object("Describe")], "desc_context",
     elem_type: "context"
   ),
   input(
@@ -115,7 +115,7 @@ using BlockBox the structure can be simplified to
     static_select(
       "Select items",
       Enum.map(1..4, fn x ->
-        generate_option("P" <> Integer.to_string(x), Integer.to_string(x + 5))
+        option_object("P" <> Integer.to_string(x), Integer.to_string(x + 5))
       end)
     ),
     "priority"
