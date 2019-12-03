@@ -43,7 +43,7 @@ The following Slack UI view
 
 has the elixir structure shown below (it is assumed that atoms will be converted to strings using whatever JSON encoding library you're using)
 
-```
+```elixir
 [
   %{type: "divider"},
   %{
@@ -97,7 +97,7 @@ has the elixir structure shown below (it is assumed that atoms will be converted
 
 using BlockBox the structure can be simplified to 
 
-```
+```elixir
 [
   divider(),
   input("Summary", plain_text_input("sum_input"), block_id: "summary"),
