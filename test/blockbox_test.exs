@@ -1,5 +1,6 @@
 defmodule BlockboxTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
+  doctest BlockBox
   use BlockBox
 
   @submission_with_optionals %{
