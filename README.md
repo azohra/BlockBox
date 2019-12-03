@@ -1,14 +1,50 @@
-![alt example block creation](https://raw.githubusercontent.com/azohra/BlockBox/master/images/shit_bricks.png)
+<!-- ![alt example block creation](https://raw.githubusercontent.com/azohra/BlockBox/master/images/shit_bricks.png) -->
+
+<p align="center">
+  <img src="images/shit_bricks.png" width="600" alt="logo">
+</p>
+
 
 # BlockBox
 
 A tool used to generate slack UI blocks using elixir defined functions.
 
+## Motivation
+
+### *Slack blocks are large*
+
+  - As seen above the view is about 3 times larger than the functional definition
+
+### *Reusability*
+  
+  - Repetition of blocks is reduced across code, the same functions are used and can be changed in a single place
+
+### *Readability*
+  
+  - It's easier to read functions with parameters instead of large scoped blocks 
+
+## Installation
+
+```elixir
+def deps do
+  [
+    {:blockbox, "~> 1.0.0"}
+  ]
+end
+```
+
+## Usage
+`use BlockBox` in whatever module you need it to get access to all the components.
+```
+  use BlockBox
+```
+
 ## Example
 
 The following Slack UI view
 
-![alt example block creation](https://raw.githubusercontent.com/azohra/BlockBox/master/images/demo.png)
+<!-- ![alt example block creation](https://raw.githubusercontent.com/azohra/BlockBox/master/images/demo.png) -->
+<img src="images/demo.png" width="400" alt="example view">
 
 has the elixir structure shown below
 
@@ -122,28 +158,4 @@ using BlockBox the structure can be simplified to
   ),
   input("Labels", plain_text_input("thing1, thing2, ...", false), "labels")
 ]
-```
-
-## Motivation
-
-### *Slack blocks are large*
-
-  - As seen above the view is about 3 times larger than the functional definition
-
-### *Reusability*
-  
-  - Repetition of blocks is reduced across code, the same functions are used and can be changed in a single place
-
-### *Readability*
-  
-  - It's easier to read functions with parameters instead of large scoped blocks 
-
-## Installation
-
-```elixir
-def deps do
-  [
-    {:blockbox, "~> 0.3.0"}
-  ]
-end
 ```
