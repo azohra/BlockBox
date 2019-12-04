@@ -24,23 +24,27 @@ defmodule BlockBox do
   alias BlockBox.Views, as: Views
 
   @doc """
-  A quality-of-life function that parses the view response payload to extract the block_id:block_value key-value pairs
-    
-    iex> submission_with_optionals = %{
+  A quality-of-life function that takes in the `values` key of the view response payload and generates a map from `action_id` to the bottom level values.
+
+  By default, the function maps `action_id`s to values (recommended approach) but by specifying `:block_id` as the second argument, it will map `block_id`s to values instead.
+
+  ## Example
+  ```
+    iex> view_values_payload = %{
     ...>  "attachments" => %{
-    ...>   "qtgL" => %{
+    ...>   "att_input" => %{
     ...>      "type" => "multi_static_select",
     ...>      "selected_options" => [%{"value" => "1"}, %{"value" => "2"}]
     ...>    }
     ...>  },
     ...>  "description" => %{
-    ...>    "42NY" => %{"type" => "plain_text_input", "value" => "test-123"}
+    ...>    "desc_input" => %{"type" => "plain_text_input", "value" => "description text"}
     ...>  },
     ...>  "labels" => %{
-    ...>    "21FdK" => %{"type" => "plain_text_input", "value" => "test-123"}
+    ...>    "label_input" => %{"type" => "plain_text_input", "value" => "label text"}
     ...>  },
     ...>  "priority" => %{
-    ...>    "tV4vB" => %{
+    ...>    "pri_input" => %{
     ...>      "selected_option" => %{
     ...>        "text" => %{"emoji" => true, "text" => "P4", "type" => "plain_text"},
     ...>        "value" => "9"
@@ -49,42 +53,48 @@ defmodule BlockBox do
     ...>    }
     ...>  },
     ...>  "summary" => %{
-    ...>    "BhPhP" => %{"type" => "plain_text_input", "value" => "test-123"}
+    ...>    "summ_input" => %{"type" => "plain_text_input", "value" => "summary text"}
     ...>  },
     ...>  "watchers" => %{
-    ...>    "Po1WR" => %{"type" => "multi_users_select", "selected_users" => ["11221", "12D123"]}
+    ...>    "watch_input" => %{"type" => "multi_users_select", "selected_users" => ["11221", "12D123"]}
     ...>  }
-    ...>} 
-    iex> get_submission_values(submission_with_optionals)
+    ...>}
+    iex> BlockBox.get_submission_values(view_values_payload)
     %{
-      "21FdK" => "test-123",
-      "42NY" => "test-123",
-      "BhPhP" => "test-123",
-      "Po1WR" => ["11221", "12D123"],
-      "qtgL" => ["1", "2"],
-      "tV4vB" => "9"
-    }    
-    iex> get_submission_values(submission_with_optionals, :block_id)
+      "att_input" => ["1", "2"],
+      "desc_input" => "description text",
+      "label_input" => "label text",
+      "pri_input" => "9",
+      "summ_input" => "summary text",
+      "watch_input" => ["11221", "12D123"]
+    }
+    iex> BlockBox.get_submission_values(view_values_payload, :block_id)
     %{
-      "21FdK" => "test-123",
-      "42NY" => "test-123",
-      "BhPhP" => "test-123",
-      "Po1WR" => ["11221", "12D123"],
-      "qtgL" => ["1", "2"],
-      "tV4vB" => "9"
-    }    
+      "attachments" => ["1", "2"],
+      "description" => "description text",
+      "labels" => "label text",
+      "priority" => "9",
+      "summary" => "summary text",
+      "watchers" => ["11221", "12D123"]
+    }
+    ```
   """
   @spec get_submission_values(map(), :action_id | :block_id) :: map()
   def get_submission_values(block_map, type \\ :action_id)
+
   def get_submission_values(block_map, :action_id) do
-    Enum.reduce(block_map, %{}, fn {k, v}, acc ->
-      Map.merge(acc, get_submission_values(v, :block_id))
+    Enum.reduce(block_map, %{}, fn {_k, v}, acc ->
+      Map.merge(acc, map_values(v))
     end)
   end
 
-  def get_submission_values(action_maps, :block_id) do
-    Enum.reduce(action_maps, %{}, fn {k, v}, acc ->
-      result = _get_val(v)
+  def get_submission_values(submission_payload, :block_id) do
+    map_values(submission_payload)
+  end
+
+  defp map_values(payload) do
+    Enum.reduce(payload, %{}, fn {k, v}, acc ->
+      result = get_val(v)
 
       case result do
         [head | []] -> Map.put(acc, k, head)
@@ -95,18 +105,18 @@ defmodule BlockBox do
     end)
   end
 
-  defp _get_val(list_val) when is_list(list_val) do
+  defp get_val(list_val) when is_list(list_val) do
     Enum.reduce(list_val, [], fn v, acc ->
-      result_val = _get_val(v)
+      result_val = get_val(v)
 
       case result_val do
         nil -> acc
-        _ -> acc ++ _get_val(v)
+        _ -> acc ++ get_val(v)
       end
     end)
   end
 
-  defp _get_val(map_val) when is_map(map_val) do
+  defp get_val(map_val) when is_map(map_val) do
     val = Map.get(map_val, "value", false)
 
     val =
@@ -124,7 +134,7 @@ defmodule BlockBox do
     case val do
       false ->
         Enum.reduce(map_val, [], fn {_k, v}, acc ->
-          vals = _get_val(v)
+          vals = get_val(v)
 
           case vals == [] or vals == nil do
             true -> acc
@@ -137,7 +147,7 @@ defmodule BlockBox do
     end
   end
 
-  defp _get_val(_val) do
+  defp get_val(_val) do
     nil
   end
 
@@ -172,7 +182,7 @@ defmodule BlockBox do
       defdelegate build_view(type, title, blocks, opts \\ []), to: Views
 
       # auxilliary functions
-      defdelegate get_submission_values(list_maps), to: BlockBox
+      defdelegate get_submission_values(payload, type \\ :action_id), to: BlockBox
     end
   end
 end
