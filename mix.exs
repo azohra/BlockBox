@@ -1,4 +1,4 @@
-defmodule Blockbox.MixProject do
+defmodule BlockBox.MixProject do
   use Mix.Project
 
   def project do
