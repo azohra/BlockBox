@@ -25,7 +25,7 @@ A tool used to generate slack UI blocks using elixir defined functions.
 ```elixir
 def deps do
   [
-    {:blockbox, "~> 1.0.0"}
+    {:blockbox, "~> 1.1.0"}
   ]
 end
 ```
