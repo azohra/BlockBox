@@ -1,4 +1,4 @@
-defmodule BlockboxTest do
+defmodule BlockBoxTest do
   use ExUnit.Case, async: true
   doctest BlockBox
   use BlockBox
@@ -62,7 +62,7 @@ defmodule BlockboxTest do
   @text_element %{"type" => "plain_text_input"}
 
   test "test get_submission_values with optionals" do
-    assert get_submission_values(@submission_with_optionals) == %{
+    assert get_submission_values(@submission_with_optionals, :block_id) == %{
              "attachments" => ["1", "2"],
              "description" => "test-123",
              "labels" => "test-123",
@@ -73,7 +73,7 @@ defmodule BlockboxTest do
   end
 
   test "test get_submission_values without optionals" do
-    assert get_submission_values(@submission_without_optionals) == %{
+    assert get_submission_values(@submission_without_optionals, :block_id) == %{
              "description" => "test-123",
              "labels" => "test-123",
              "priority" => "9",
