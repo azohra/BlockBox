@@ -80,16 +80,16 @@ defmodule BlockBox do
     ```
   """
   @spec get_submission_values(map(), :action_id | :block_id) :: map()
-  def get_submission_values(block_map, type \\ :action_id)
+  def get_submission_values(values_payload, type \\ :action_id)
 
-  def get_submission_values(block_map, :action_id) do
-    Enum.reduce(block_map, %{}, fn {_k, v}, acc ->
+  def get_submission_values(values_payload, :action_id) do
+    Enum.reduce(values_payload, %{}, fn {_k, v}, acc ->
       Map.merge(acc, map_values(v))
     end)
   end
 
-  def get_submission_values(submission_payload, :block_id) do
-    map_values(submission_payload)
+  def get_submission_values(values_payload, :block_id) do
+    map_values(values_payload)
   end
 
   defp map_values(payload) do
