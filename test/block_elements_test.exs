@@ -62,6 +62,7 @@ defmodule BlockBox.BlockElementsTest do
 
   test "radio_buttons" do
     assert BE.radio_buttons("id", []) == %{action_id: "id", options: [], type: "radio_buttons"}
+    assert BE.radio_buttons("id", [%{text: "def", value: "hello"}], initial_option: 0) == %{action_id: "id", options: [%{text: "def", value: "hello"}], initial_option: %{text: "def", value: "hello"}, type: "radio_buttons"}
   end
 
   test "select_menu" do
@@ -77,6 +78,23 @@ defmodule BlockBox.BlockElementsTest do
              type: :static_select,
              options: []
            }
+    
+    assert BE.select_menu("placeholder", :static_select, "id", options: [%{text: "def", value: "hello"}, %{text: "abc", value: "world"}], initial_option: 0) == %{
+             action_id: "id",
+             placeholder: %{text: "placeholder", type: :plain_text},
+             type: :static_select,
+             options: [%{text: "def", value: "hello"}, %{text: "abc", value: "world"}],
+             initial_option: %{text: "def", value: "hello"}
+           }
+    
+    assert BE.select_menu("placeholder", :static_select, "id", option_groups: [%{label: "yo", options: [%{text: "def", value: "hello"}, %{text: "abc", value: "world"}]}], initial_option: {0,1}) == %{
+             action_id: "id",
+             placeholder: %{text: "placeholder", type: :plain_text},
+             type: :static_select,
+             option_groups: [%{label: "yo", options: [%{text: "def", value: "hello"}, %{text: "abc", value: "world"}]}],
+             initial_option: %{text: "abc", value: "world"}
+           }
+
   end
 
   test "multi_select_menu" do
@@ -84,6 +102,22 @@ defmodule BlockBox.BlockElementsTest do
              action_id: "id",
              placeholder: %{text: "placeholder", type: :plain_text},
              type: :multi_users_select
+           }
+
+    assert BE.multi_select_menu("placeholder", :multi_static_select, "id", options: [%{text: "def", value: "hello"}, %{text: "abc", value: "world"}], initial_options: [0,1]) == %{
+             action_id: "id",
+             placeholder: %{text: "placeholder", type: :plain_text},
+             type: :multi_static_select,
+             options: [%{text: "def", value: "hello"}, %{text: "abc", value: "world"}],
+             initial_options: [%{text: "abc", value: "world"}, %{text: "def", value: "hello"}]
+           }
+    
+    assert BE.multi_select_menu("placeholder", :multi_static_select, "id", option_groups: [%{label: "yo", options: [%{text: "def", value: "hello"}, %{text: "abc", value: "world"}]}], initial_options: [{0,0}, {0,1}]) == %{
+             action_id: "id",
+             placeholder: %{text: "placeholder", type: :plain_text},
+             type: :multi_static_select,
+             option_groups: [%{label: "yo", options: [%{text: "def", value: "hello"}, %{text: "abc", value: "world"}]}],
+             initial_options: [%{text: "abc", value: "world"}, %{text: "def", value: "hello"}]
            }
   end
 end

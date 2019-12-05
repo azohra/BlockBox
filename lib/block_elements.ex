@@ -123,15 +123,15 @@ defmodule BlockBox.BlockElements do
 
   ## Options
   Options are not included by default.
-  * `:initial_option` - `t:BlockBox.CompositionObjects.option_object/0`
+  * `:initial_option` - `t:BlockBox.CompositionObjects.option_object/0` or integer can provide an option object or an index to an option object
   * `:confirm` - `t:BlockBox.CompositionObjects.confirm_object/0`
   """
   @spec radio_buttons(String.t(), list(CO.option_object()), keyword()) :: map()
   def radio_buttons(action_id, options, opts \\ []) do
+    opts = [{:options, options} | opts] |> Utils.get_initial_opts(:initial_option)
     %{
       type: "radio_buttons",
       action_id: action_id,
-      options: options
     }
     |> Map.merge(Enum.into(opts, %{}))
   end
@@ -146,7 +146,7 @@ defmodule BlockBox.BlockElements do
 
   ## Options
   Options are not included by default.
-  * `:initial_option` - `t:BlockBox.CompositionObjects.option_object/0`, only available with [static_select](https://api.slack.com/reference/block-kit/block-elements#static_select) or [external_select](https://api.slack.com/reference/block-kit/block-elements#external_select) types
+  * `:initial_option` - `t:BlockBox.CompositionObjects.option_object/0` or integer or integer tuple for group objects, only available with [static_select](https://api.slack.com/reference/block-kit/block-elements#static_select) or [external_select](https://api.slack.com/reference/block-kit/block-elements#external_select) types, can also use index of option_object or tuple index of option_group_object
   * `:min_query_length` - positive integer, only available with [external_select](https://api.slack.com/reference/block-kit/block-elements#external_select) type
   * `:initial_user` - slack user ID, only available with [users_select](https://api.slack.com/reference/block-kit/block-elements#users_select) type
   * `:initial_conversation` - slack conversation ID, only available with [conversations_select](https://api.slack.com/reference/block-kit/block-elements#conversation_select) type
@@ -167,6 +167,7 @@ defmodule BlockBox.BlockElements do
   end
 
   def select_menu(placeholder, type, action_id, opts) do
+    opts = opts |> Utils.get_initial_opts(:initial_option)
     %{type: type, placeholder: placeholder, action_id: action_id}
     |> Map.merge(Enum.into(opts, %{}))
   end
@@ -180,7 +181,7 @@ defmodule BlockBox.BlockElements do
 
   ## Options
   Options are not included by default.
-  * `:initial_options` - list of `t:BlockBox.CompositionObjects.option_object/0`s, only available with [multi_static_select](https://api.slack.com/reference/block-kit/block-elements#static_multi_select) or [external_select](https://api.slack.com/reference/block-kit/block-elements#external_multi_select) types
+  * `:initial_options` - list of `t:BlockBox.CompositionObjects.option_object/0`s or list of integer indices or list of tuples of integer indices for group objects, only available with [multi_static_select](https://api.slack.com/reference/block-kit/block-elements#static_multi_select) or [external_select](https://api.slack.com/reference/block-kit/block-elements#external_multi_select) types, can also use a list of indices of objects, or provide a list of tuple indices for group objects
   * `:min_query_length` - positive integer, only available with [multi_external_select](https://api.slack.com/reference/block-kit/block-elements#external_multi_select) type
   * `:initial_users` - list of slack user IDs, only available with [multi_users_select](https://api.slack.com/reference/block-kit/block-elements#users_multi_select) type
   * `:initial_conversations` - list of slack conversation IDs, only available with [multi_conversations_select](https://api.slack.com/reference/block-kit/block-elements#conversation_multi_select) type
@@ -194,6 +195,7 @@ defmodule BlockBox.BlockElements do
           keyword()
         ) :: map()
   def multi_select_menu(placeholder, type, action_id, opts \\ []) do
+    opts = opts |> Utils.get_initial_opts(:initial_options)
     select_menu(placeholder, type, action_id, opts)
   end
 end

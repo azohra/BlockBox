@@ -54,12 +54,6 @@ defmodule BlockBoxTest do
     },
     "watchers" => %{"Po1WR" => %{"type" => "multi_users_select"}}
   }
-  @elements %{
-    "text" => %{"text" => "Click Here", "type" => "plain_text"},
-    "type" => "button",
-    "value" => "output"
-  }
-  @text_element %{"type" => "plain_text_input"}
 
   test "test get_submission_values with optionals" do
     assert get_submission_values(@submission_with_optionals, :block_id) == %{
