@@ -123,11 +123,13 @@ defmodule BlockBox.BlockElements do
 
   ## Options
   Options are not included by default.
-  * `:initial_option` - `t:BlockBox.CompositionObjects.option_object/0`
+  * `:initial_option` - `t:BlockBox.CompositionObjects.option_object/0` or an integer representing the index of the option you want to select
   * `:confirm` - `t:BlockBox.CompositionObjects.confirm_object/0`
   """
   @spec radio_buttons(String.t(), list(CO.option_object()), keyword()) :: map()
   def radio_buttons(action_id, options, opts \\ []) do
+    opts = Utils.convert_initial_opts(opts)
+
     %{
       type: "radio_buttons",
       action_id: action_id,
@@ -146,7 +148,7 @@ defmodule BlockBox.BlockElements do
 
   ## Options
   Options are not included by default.
-  * `:initial_option` - `t:BlockBox.CompositionObjects.option_object/0`, only available with [static_select](https://api.slack.com/reference/block-kit/block-elements#static_select) or [external_select](https://api.slack.com/reference/block-kit/block-elements#external_select) types
+  * `:initial_option` - `t:BlockBox.CompositionObjects.option_object/0`, only available with [static_select](https://api.slack.com/reference/block-kit/block-elements#static_select) or [external_select](https://api.slack.com/reference/block-kit/block-elements#external_select) types. Also included is the ability to pass in an integer representing the index of the item you want to select in `:options` or a 2-tuple containing the index of the 2D-list that is your `:option_groups`, only available with [static_select](https://api.slack.com/reference/block-kit/block-elements#static_select).
   * `:min_query_length` - positive integer, only available with [external_select](https://api.slack.com/reference/block-kit/block-elements#external_select) type
   * `:initial_user` - slack user ID, only available with [users_select](https://api.slack.com/reference/block-kit/block-elements#users_select) type
   * `:initial_conversation` - slack conversation ID, only available with [conversations_select](https://api.slack.com/reference/block-kit/block-elements#conversation_select) type
@@ -167,6 +169,8 @@ defmodule BlockBox.BlockElements do
   end
 
   def select_menu(placeholder, type, action_id, opts) do
+    opts = Utils.convert_initial_opts(opts)
+
     %{type: type, placeholder: placeholder, action_id: action_id}
     |> Map.merge(Enum.into(opts, %{}))
   end
@@ -180,7 +184,7 @@ defmodule BlockBox.BlockElements do
 
   ## Options
   Options are not included by default.
-  * `:initial_options` - list of `t:BlockBox.CompositionObjects.option_object/0`s, only available with [multi_static_select](https://api.slack.com/reference/block-kit/block-elements#static_multi_select) or [external_select](https://api.slack.com/reference/block-kit/block-elements#external_multi_select) types
+  * `:initial_options` - list of `t:BlockBox.CompositionObjects.option_object/0`s, only available with [multi_static_select](https://api.slack.com/reference/block-kit/block-elements#static_multi_select) or [multi_external_select](https://api.slack.com/reference/block-kit/block-elements#external_multi_select) types. Also included is the ability to pass in an integer representing the index of the item you want to select in `:options` or a 2-tuple containing the index of the 2D-list that is your `:option_groups`, only available with [multi_static_select](https://api.slack.com/reference/block-kit/block-elements#static_multi_select).
   * `:min_query_length` - positive integer, only available with [multi_external_select](https://api.slack.com/reference/block-kit/block-elements#external_multi_select) type
   * `:initial_users` - list of slack user IDs, only available with [multi_users_select](https://api.slack.com/reference/block-kit/block-elements#users_multi_select) type
   * `:initial_conversations` - list of slack conversation IDs, only available with [multi_conversations_select](https://api.slack.com/reference/block-kit/block-elements#conversation_multi_select) type
