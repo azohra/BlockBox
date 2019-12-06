@@ -58,8 +58,8 @@ defmodule BlockBox.Utils do
           no_processing_required
       end
 
-    case length(items) do
-      1 -> Keyword.put(opts, put_opt, hd(items))
+    case items do
+      [_len1] -> Keyword.put(opts, put_opt, hd(items))
       _ -> Keyword.put(opts, put_opt, items)
     end
   end
