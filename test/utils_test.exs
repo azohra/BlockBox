@@ -40,6 +40,13 @@ defmodule UtilsTest do
              options: options
            ]
 
+    opts = [options: options, initial_options: [0]]
+
+    assert convert_initial_opts(opts) == [
+             initial_options: [%{text: "def", value: "hello"}],
+             options: options
+           ]
+
     opts = [option_groups: option_groups, initial_option: {0, 1}]
 
     assert convert_initial_opts(opts) == [
@@ -51,6 +58,13 @@ defmodule UtilsTest do
 
     assert convert_initial_opts(opts) == [
              initial_options: [%{text: "def", value: "hello"}, %{text: "abc", value: "world"}],
+             option_groups: option_groups
+           ]
+
+    opts = [option_groups: option_groups, initial_options: [{0, 0}]]
+
+    assert convert_initial_opts(opts) == [
+             initial_options: [%{text: "def", value: "hello"}],
              option_groups: option_groups
            ]
   end
