@@ -110,7 +110,8 @@ defmodule BlockBox.CompositionObjects do
   end
 
   @doc """
-  Function that generates an [filter object](https://api.slack.com/reference/block-kit/composition-objects#filter_conversations) for conversation lists
+  Function that generates a [filter object](https://api.slack.com/reference/block-kit/composition-objects#filter_conversations) for conversation lists.
+
   All fields are optional but AT LEAST ONE MUST BE INCLUDED.
   ## Options
   Options are not included by default.
