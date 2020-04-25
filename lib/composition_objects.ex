@@ -38,7 +38,7 @@ defmodule BlockBox.CompositionObjects do
   @type filter_object() :: %{
           optional(:include) => list(String.t()),
           optional(:exclude_external_shared_channels) => boolean(),
-          exclude_bot_users => boolean()
+          optional(:exclude_bot_users) => boolean()
         }
 
   @doc """
@@ -119,7 +119,6 @@ defmodule BlockBox.CompositionObjects do
   * `:exclude_bot_users` - boolean, defaults to false
   """
   def filter_object(opts) do
-      Enum.into(opts, %{})
+    Enum.into(opts, %{})
   end
-
 end

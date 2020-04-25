@@ -158,6 +158,7 @@ defmodule BlockBox do
       defdelegate confirm_object(title, text, confirm \\ "Confirm", deny \\ "Deny"), to: CO
       defdelegate option_object(text, value, opts \\ []), to: CO
       defdelegate option_group_object(label, options), to: CO
+      defdelegate filter_object(options), to: CO
 
       # layout blocks
       defdelegate section(text, opts \\ []), to: LB
