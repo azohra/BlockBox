@@ -154,6 +154,8 @@ defmodule BlockBox.BlockElements do
   * `:initial_conversation` - slack conversation ID, only available with [conversations_select](https://api.slack.com/reference/block-kit/block-elements#conversation_select) type
   * `:initial_channel` -  slack channel ID, only available with [channels_select](https://api.slack.com/reference/block-kit/block-elements#channel_select) type
   * `:confirm` - `t:BlockBox.CompositionObjects.confirm_object/0`
+  * `:response_url_enabled` - boolean, only works with menus in inputs blocks and modals. only available with [conversations_select](https://api.slack.com/reference/block-kit/block-elements#conversation_select) and [channels_select](https://api.slack.com/reference/block-kit/block-elements#channel_select)
+  * `:filter` - `t:BlockBox.CompositionObjects.filter_object/0`, only available with [conversations_select](https://api.slack.com/reference/block-kit/block-elements#conversation_select) type
   """
   @spec select_menu(
           String.t() | CO.plain_text_object(),
@@ -190,6 +192,7 @@ defmodule BlockBox.BlockElements do
   * `:initial_conversations` - list of slack conversation IDs, only available with [multi_conversations_select](https://api.slack.com/reference/block-kit/block-elements#conversation_multi_select) type
   * `:initial_channels` - list of slack channel IDs, only available with [multi_channels_select](https://api.slack.com/reference/block-kit/block-elements#channel_multi_select) type
   * `:confirm` - `t:BlockBox.CompositionObjects.confirm_object/0`
+  * `:filter` - `t:BlockBox.CompositionObjects.filter_object/0`, only available with [multi_conversations_select](hthttps://api.slack.com/reference/block-kit/block-elements#conversation_multi_select) type
   """
   @spec multi_select_menu(
           String.t() | CO.plain_text_object(),

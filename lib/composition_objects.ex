@@ -35,6 +35,12 @@ defmodule BlockBox.CompositionObjects do
           required(:options) => list(option_object())
         }
 
+  @type filter_object() :: %{
+          optional(:include) => list(String.t()),
+          optional(:exclude_external_shared_channels) => boolean(),
+          exclude_bot_users => boolean()
+        }
+
   @doc """
   Function that generates a [text object](https://api.slack.com/reference/block-kit/composition-objects#text)
 
@@ -69,7 +75,7 @@ defmodule BlockBox.CompositionObjects do
   Function that generates an [option object](https://api.slack.com/reference/block-kit/composition-objects#option) for select menus
   ## Options
   Options are not included by default.
-  * `:url` - boolean, only availablein overflow menus
+  * `:url` - boolean, only available in overflow menus
   """
   def option_object(text, value, opts \\ [])
 
@@ -102,4 +108,18 @@ defmodule BlockBox.CompositionObjects do
       options: options
     }
   end
+
+  @doc """
+  Function that generates an [filter object](https://api.slack.com/reference/block-kit/composition-objects#filter_conversations) for conversation lists
+  All fields are optional but AT LEAST ONE MUST BE INCLUDED.
+  ## Options
+  Options are not included by default.
+  * `:include` - non empty list of strings from the following options: "im", "mpim", "private", "public"
+  * `:exclude_external_shared_channels` - boolean, defaults to false
+  * `:exclude_bot_users` - boolean, defaults to false
+  """
+  def filter_object(opts) do
+      Enum.into(opts, %{})
+  end
+
 end
