@@ -176,6 +176,7 @@ defmodule BlockBox do
       defdelegate overflow_menu(action_id, options, opts \\ []), to: BE
       defdelegate plain_text_input(action_id, opts \\ []), to: BE
       defdelegate radio_buttons(action_id, options, opts \\ []), to: BE
+      defdelegate checkboxes(action_id, options, opts \\ []), to: BE
       defdelegate select_menu(placeholder, type, action_id, opts \\ []), to: BE
       defdelegate multi_select_menu(placeholder, type, action_id, opts \\ []), to: BE
 

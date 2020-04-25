@@ -139,6 +139,26 @@ defmodule BlockBox.BlockElements do
   end
 
   @doc """
+  Creates a [checkbox group element](https://api.slack.com/reference/block-kit/block-elements#checkboxes).
+
+  ## Options
+  Options are not included by default.
+  * `:initial_options` - list of `t:BlockBox.CompositionObjects.option_object/0`s, Also included is the ability to pass in a list of integers representing the index of the item you want to select in `:options`.
+  * `:confirm` - `t:BlockBox.CompositionObjects.confirm_object/0`
+  """
+  @spec checkboxes(String.t(), list(CO.option_object()), keyword()) :: map()
+  def checkboxes(action_id, options, opts \\ []) do
+    opts = Utils.convert_initial_opts(opts)
+
+    %{
+      type: "checkboxes",
+      action_id: action_id,
+      options: options
+    }
+    |> Map.merge(Enum.into(opts, %{}))
+  end
+
+  @doc """
   Creates a [select menu element](https://api.slack.com/reference/block-kit/block-elements#select).
 
   *ONLY ONE* of the following k/v pairs must be included in the options:
