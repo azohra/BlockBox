@@ -2,6 +2,9 @@ defmodule BlockBox.CompositionObjects do
   @moduledoc """
   Defines types and generator functions for all [composition objects](https://api.slack.com/reference/block-kit/composition-objects).
   """
+
+  alias BlockBox.Utils, as: Utils
+
   @type text_type() :: :plain_text | :mrkdwn
 
   @type text_object() :: %{
@@ -76,6 +79,7 @@ defmodule BlockBox.CompositionObjects do
   ## Options
   Options are not included by default.
   * `:url` - boolean, only available in overflow menus
+  * `:description` - String, max 75 chars
   """
   def option_object(text, value, opts \\ [])
 
@@ -86,6 +90,8 @@ defmodule BlockBox.CompositionObjects do
   end
 
   def option_object(text_object, value, opts) do
+    opts = Utils.convert_text_opts(opts, [:description])
+
     %{
       text: text_object,
       value: value
