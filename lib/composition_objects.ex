@@ -30,7 +30,7 @@ defmodule BlockBox.CompositionObjects do
   @type option_object() :: %{
           required(:text) => text_object(),
           required(:value) => String.t(),
-          optional(:description) => String.t(),
+          optional(:description) => plain_text_object(),
           optional(:url) => String.t()
         }
 
