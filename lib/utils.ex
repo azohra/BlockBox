@@ -58,9 +58,12 @@ defmodule BlockBox.Utils do
           no_processing_required
       end
 
-    case items do
-      [_len1] -> Keyword.put(opts, put_opt, hd(items))
-      _ -> Keyword.put(opts, put_opt, items)
+    case put_opt do
+      :initial_option ->
+        Keyword.put(opts, put_opt, hd(items))
+
+      _ ->
+        Keyword.put(opts, put_opt, items)
     end
   end
 

@@ -6,7 +6,7 @@ defmodule BlockBox do
   ```elixir
   def deps do
     [
-      {:blockbox, "~> 1.1.1"}
+      {:blockbox, "~> 1.1.2"}
     ]
   end
   ```
@@ -158,6 +158,7 @@ defmodule BlockBox do
       defdelegate confirm_object(title, text, confirm \\ "Confirm", deny \\ "Deny"), to: CO
       defdelegate option_object(text, value, opts \\ []), to: CO
       defdelegate option_group_object(label, options), to: CO
+      defdelegate filter_object(options), to: CO
 
       # layout blocks
       defdelegate section(text, opts \\ []), to: LB
@@ -175,6 +176,7 @@ defmodule BlockBox do
       defdelegate overflow_menu(action_id, options, opts \\ []), to: BE
       defdelegate plain_text_input(action_id, opts \\ []), to: BE
       defdelegate radio_buttons(action_id, options, opts \\ []), to: BE
+      defdelegate checkboxes(action_id, options, opts \\ []), to: BE
       defdelegate select_menu(placeholder, type, action_id, opts \\ []), to: BE
       defdelegate multi_select_menu(placeholder, type, action_id, opts \\ []), to: BE
 

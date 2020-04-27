@@ -64,6 +64,10 @@ defmodule BlockBox.BlockElementsTest do
     assert BE.radio_buttons("id", []) == %{action_id: "id", options: [], type: "radio_buttons"}
   end
 
+  test "checkboxes" do
+    assert BE.checkboxes("id", []) == %{action_id: "id", options: [], type: "checkboxes"}
+  end
+
   test "select_menu" do
     assert BE.select_menu("placeholder", :static_select, "id") == %{
              action_id: "id",

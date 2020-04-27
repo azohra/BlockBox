@@ -30,4 +30,18 @@ defmodule BlockBox.CompositionObectsTest do
              options: [%{text: %{text: "text", type: :plain_text}, value: "value"}]
            }
   end
+
+  test "filter_object" do
+    options = [
+      include: ["private"],
+      exclude_external_shared_channels: true,
+      exclude_bot_users: false
+    ]
+
+    assert CO.filter_object(options) == %{
+             include: ["private"],
+             exclude_external_shared_channels: true,
+             exclude_bot_users: false
+           }
+  end
 end
