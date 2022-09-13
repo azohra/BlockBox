@@ -131,6 +131,12 @@ defmodule BlockBox do
         _ -> val
       end
 
+    val =
+      case val do
+        false -> Map.get(map_val, "selected_channel", false)
+        _ -> val
+      end
+
     case val do
       false ->
         Enum.reduce(map_val, [], fn {_k, v}, acc ->
