@@ -19,6 +19,8 @@ jobs:
         otp-version: '25.0' # Define the OTP version [required]
         install-hex: true
     - name: Publish to Hex.pm
-      run: mix hex.publish --yes
+      run: |
+        mix deps.get
+        mix hex.publish --yes
       env:
         HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
