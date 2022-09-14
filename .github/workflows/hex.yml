@@ -1,4 +1,4 @@
-name: Hex Publishing
+name: Hex
 
 on:
   push:
@@ -7,12 +7,18 @@ on:
 
 jobs:
   publish:
+    name: Publish
     runs-on: ubuntu-latest
-    steps:
-      - name: Check out
-        uses: actions/checkout@v2
 
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Elixir
+      uses: erlef/setup-beam@988e02bfe678367a02564f65ca2e37726dc0268f
+      with:
+        elixir-version: '1.14.0' # Define the elixir version [required]
+        otp-version: '25.0' # Define the OTP version [required]
+        install-hex: true
       - name: Publish to Hex.pm
-        uses: erlangpack/github-action@v3
+        run: mix hex.publish --yes
         env:
           HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
