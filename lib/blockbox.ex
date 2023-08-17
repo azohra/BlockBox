@@ -127,6 +127,12 @@ defmodule BlockBox do
 
     val =
       case val do
+        false -> Map.get(map_val, "selected_date_time", false)
+        _ -> val
+      end
+
+    val =
+      case val do
         false -> Map.get(map_val, "selected_users", false)
         _ -> val
       end

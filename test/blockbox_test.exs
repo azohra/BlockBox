@@ -30,6 +30,12 @@ defmodule BlockBoxTest do
     },
     "watchers" => %{
       "Po1WR" => %{"type" => "multi_users_select", "selected_users" => ["11221", "12D123"]}
+    },
+    "startDateTime" => %{
+      "startDateTime" => %{
+        "selected_date_time" => 1_690_866_000,
+        "type" => "datetimepicker"
+      }
     }
   }
   @submission_without_optionals %{
@@ -68,7 +74,8 @@ defmodule BlockBoxTest do
              "labels" => "test-123",
              "priority" => "9",
              "summary" => "test-123",
-             "watchers" => ["11221", "12D123"]
+             "watchers" => ["11221", "12D123"],
+             "startDateTime" => 1_690_866_000
            }
   end
 
